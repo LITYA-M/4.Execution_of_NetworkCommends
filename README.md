@@ -26,7 +26,75 @@ This commands includes
 • Other IP Commands e.g. show ip route etc.
 <BR>
 
-## Output
+## PROGRAM:
+### PING:
+server.py:
+```
+import socket
+from pythonping import ping
+
+def start_server(host='localhost', port=8000):
+    s = socket.socket()
+    s.bind((host, port))
+    s.listen(5)
+    print(f"Server listening on {host}:{port}")
+
+    while True:
+        c, addr = s.accept()
+        print(f"Connection from {addr}")
+        while True:
+            hostname = c.recv(1024).decode()
+            if not hostname:
+                break
+            try:
+                result = str(ping(hostname, verbose=False))
+                c.send(result.encode())
+            except Exception:
+                c.send("Not Found".encode())
+        c.close()
+
+if __name__ == "__main__":
+    start_server()
+```
+client.py:
+```
+import socket
+
+def ping_client(host='localhost', port=8000):
+    s = socket.socket()
+    s.connect((host, port))
+    while True:
+        ip = input("Enter the website you want to ping (or 'exit' to quit): ")
+        if ip.lower() == 'exit':
+            break
+        s.send(ip.encode())
+        print("Server response:", s.recv(1024).decode())
+    s.close()
+
+if __name__ == "__main__":
+    ping_client()
+```
+## output:
+server.py:
+<img width="679" height="92" alt="Screenshot 2026-03-11 160258" src="https://github.com/user-attachments/assets/330e9124-45ef-4fc1-997c-4fd9ae0309a3" />
+client.py:
+<img width="691" height="236" alt="Screenshot 2026-03-11 160306" src="https://github.com/user-attachments/assets/e9c92f3f-04e1-4b5e-b53d-4f5cfd9dae76" />
+
+### tracert
+tracert.py
+```
+import subprocess
+
+target = input("Enter website or IP: ")
+
+subprocess.run(["tracert", target])
+```
+## output
+
+<img width="745" height="583" alt="Screenshot 2026-03-11 161951" src="https://github.com/user-attachments/assets/4cb98ebe-5095-4e3a-9e84-ba1ec334fac8" />
+
+
+
 
 COMMANDS:
 
@@ -112,8 +180,6 @@ systeminfo is a command-line tool used to display detailed information about a c
 ## OUTPUT:
 
 <img width="1920" height="1080" alt="Screenshot 2026-03-10 214654" src="https://github.com/user-attachments/assets/49cc29a6-750e-4336-8ffb-73eca04c127b" />
-
-
 
 
 ## Result
